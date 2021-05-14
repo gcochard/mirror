@@ -23,11 +23,11 @@ jobs:
         ssh-add /home/runner/.ssh/github_actions
     - name: Mirror
       run: |
-        git clone --mirror "$TARGET_REPO"
+        git clone --mirror "$SOURCE_REPO"
         cd java-identity-provider.git/
-        git remote add github "$GITHUB_REPOSITORY"
+        git remote add github "$DEST_REPO"
         git push --mirror github
       env:
-        TARGET_REPO: https://git.shibboleth.net/git/java-identity-provider
-        GITHUB_REPOSITORY: git@github.com:gcochard/shibboleth-idp.git
+        SOURCE_REPO: https://git.shibboleth.net/git/java-identity-provider
+        DEST_REPO: git@github.com:gcochard/shibboleth-idp.git
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
