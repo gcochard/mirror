@@ -8,6 +8,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Add SSH key
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        mkdir -p /home/runner/.ssh
+        # Replace example.com with the hostname of the machine
+        # you're SSH-ing into
+        ssh-keyscan github.com >> /home/runner/.ssh/known_hosts
+        # DEPLOY_KEY is the name of the repository secret
+        echo "${{ secrets.DEPLOY_KEY }}" > /home/runner/.ssh/github_actions
+        chmod 600 /home/runner/.ssh/github_actions
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null   
+        ssh-add /home/runner/.ssh/github_actions
     - name: Mirror
       run: |
         git clone --mirror "$REPO"
@@ -17,4 +30,4 @@ jobs:
       env:
         REPO: https://git.shibboleth.net/git/java-identity-provider
         GITHUB_REPOSITORY: git@github.com:gcochard/shibboleth-idp.git
-        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
