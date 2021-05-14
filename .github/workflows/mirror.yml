@@ -1,8 +1,8 @@
 name: Mirror Repo
 on:
   schedule:
-    # hourly (0th minute of every hour)
-    - cron:  '0 * * * *'
+    # hourly (10th minute of every hour)
+    - cron:  '15 * * * *'
 
 jobs:
   build:
@@ -23,11 +23,11 @@ jobs:
         ssh-add /home/runner/.ssh/github_actions
     - name: Mirror
       run: |
-        git clone --mirror "$REPO"
+        git clone --mirror "$TARGET_REPO"
         cd java-identity-provider.git/
         git remote add github "$GITHUB_REPOSITORY"
         git push --mirror github
       env:
-        REPO: https://git.shibboleth.net/git/java-identity-provider
+        TARGET_REPO: https://git.shibboleth.net/git/java-identity-provider
         GITHUB_REPOSITORY: git@github.com:gcochard/shibboleth-idp.git
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
