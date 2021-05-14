@@ -1,0 +1,20 @@
+name: Mirror Repo
+on:
+  schedule:
+    # hourly (0th minute of every hour)
+    - cron:  '0 * * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Mirror
+      run: |
+        git clone --mirror "$REPO"
+        cd java-identity-provider.git/
+        git remote add github "$GITHUB_REPOSITORY"
+        git push --mirror github
+      env:
+        REPO: https://git.shibboleth.net/git/java-identity-provider
+        GITHUB_REPOSITORY: git@github.com:gcochard/shibboleth-idp.git
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
